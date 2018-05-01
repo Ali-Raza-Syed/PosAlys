@@ -69,10 +69,13 @@ def create_block(block_name, input, filters, num_input_channels, new_stage,
         shortcut_add_block2c = tf.nn.relu(shortcut_add_block2c)
     return shortcut_add_block2c
 
+heatmap_size = 23
+num_heatmaps = 15
 input_shape = [ 368, 368 ]
 input_channels = 3
 #confirm input image shape
 input = tf.placeholder( tf.float32, [ None, input_shape[ 0 ], input_shape[ 1 ], input_channels ] )
+gt_heatmaps = tf.placeholder( tf.float32, [ None, heatmap_size, heatmap_size, num_heatmaps ] )
 
 with tf.name_scope( 'res1' ):
     with tf.name_scope( 'res1a_conv' ):
@@ -165,9 +168,30 @@ with tf.name_scope( 'res5' ):
                          new_stage=False, weight_initializer='xavier', bias_initializer='xavier',
                          skip_connection=False)
 
+l2_loss = ( res5c - gt_heatmaps ) ** 2
+l2_loss = tf.reshape( l2_loss, [ -1, heatmap_size * heatmap_size * num_heatmaps ] )
+l2_loss = tf.reduce_sum( l2_loss, axis = 1 )
+l2_loss = tf.reduce_mean( l2_loss )
+
+optimizer = tf.train.AdadeltaOptimizer().minimize( l2_loss )
+
 init_op = tf.global_variables_initializer()
+num_epochs = 10;
+num_batches = np.floor( num_of_images / batch_size )
+
 with tf.Session() as sess:
     writer = tf.summary.FileWriter('logs', sess.graph)
     sess.run( init_op )
-    sess.run( [ res5c ], feed_dict = {input : np.ones( [ 10, 368, 368, 3 ] )} )
+
+    for epoch in range( num_epochs ):
+        avg_cost = 0
+        for batch_idx in range( num_batches ):
+            batch_imgs, batch_hms = get_batch( batch_size = batch_size )
+            _, cost = sess.run([optimizer, l2_loss],
+                            feed_dict={input : batch_imgs, gt_heatmaps : batch_hms})
+            avg_cost += cost / num_batches
+        print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
+
+    print("\nTraining complete!")
+
     writer.close()
