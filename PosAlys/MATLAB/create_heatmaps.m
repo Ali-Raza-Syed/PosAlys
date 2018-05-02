@@ -38,6 +38,13 @@ else
     starting_batch_idx = 1;
 end
 
+% if exist('anno_points_not_present_idx_list.mat', 'file') == 2
+%     anno_points_not_present_idx_list = load('anno_points_not_present_idx_list.mat');
+%     anno_points_not_present_idx_list = anno_points_not_present_idx_list.anno_points_not_present_idx_list;
+% else
+%     anno_points_not_present_idx_list = [];
+% end
+
 scale_heatmaps = 10^4;
 sigma = 2;
 
@@ -52,18 +59,18 @@ for batch_idx = starting_batch_idx : num_batches
                                               mod( size( train_annolist, 2 ) / num_imgs_one_go ) );
     end
     num_imgs = size( curr_train_annolist, 2 );
-    heatmaps = cell( 1, num_imgs );
     annopoints_present = 1;
     for img_idx = 1 : num_imgs
         %%%%thuk for when num_imgs_one_go = 1
         if ~isfield(curr_train_annolist( 1 ).annorect, 'annopoints')
             annopoints_present = 0;
+            %anno_points_not_present_idx_list = cat( 1, anno_points_not_present_idx_list, img_idx );
             break;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         img_name = curr_train_annolist(img_idx).image.name;
         img = imread( strcat( imgs_path, '\', img_name ) );
-
+        %img_name = img_name(1 : end - 4);
         img_rows = size( img, 1 );
         img_cols = size( img, 2 );
 
@@ -75,7 +82,6 @@ for batch_idx = starting_batch_idx : num_batches
 
 
         num_persons_img = size( curr_train_annolist( img_idx ).annorect, 2 );
-        img_heatmaps = cell( 1,  num_persons_img);
         for person_idx = 1 : num_persons_img
             joint_pos_x = [ curr_train_annolist(img_idx).annorect(person_idx).annopoints.point(:).x ]';
             joint_pos_y = [ curr_train_annolist(img_idx).annorect(person_idx).annopoints.point(:).y ]';
@@ -86,59 +92,37 @@ for batch_idx = starting_batch_idx : num_batches
             joint_pos_from_center = floor( joint_pos - center_mat );
 
             num_joints = size( joint_pos, 1 );
-
-            curr_person_heatmaps = cell( size( gauss_rows, 2 ), size( gauss_cols, 2 ), num_joints );
-            for joint_index = 1 : num_joints
-                curr_heatmap = 0.5*pi*sigma.^2 .* exp( -( (joint_pos_from_center( joint_index, 1 )-x).^2 +...
-                                                    (joint_pos_from_center( joint_index, 2 ) - y).^2 ) /...
-                                                    ( 2*sigma.^2 ) );
-                curr_heatmap = curr_heatmap .* scale_heatmaps;
-                curr_heatmap(curr_heatmap < 1) = 0;
-                curr_heatmap = num2cell( curr_heatmap );
-                curr_person_heatmaps(:, :, joint_index) = curr_heatmap;
-            end
-
-            if size( curr_person_heatmaps, 1 ) ~= img_rows
-               curr_person_heatmaps = curr_person_heatmaps(1 : end - 1, :, : ); 
-            end
-            if size( curr_person_heatmaps, 2 ) ~= img_cols
-               curr_person_heatmaps = curr_person_heatmaps(:, 1 : end - 1, : ); 
-            end
-
-            img_heatmaps(person_idx) = {curr_person_heatmaps};
-        end
-        heatmaps(img_idx) = {img_heatmaps};
-    end
-
-    if annopoints_present == 0
-       continue; 
-    end
-    
-    display('creating dir');
-    for img_idx = 1 : num_imgs
-        curr_img_heatmaps = heatmaps{1, img_idx};
-        img_name = curr_train_annolist( img_idx ).image.name;
-        img_name = img_name(1 : end - 4);
-        %mkdir heatmaps_dir img_name;
-        num_persons_img = size( curr_train_annolist( img_idx ).annorect, 2 );
-        for person_idx = 1 : num_persons_img
+            
             person_path = strcat( heatmaps_dir, '\', img_name );
             person_name = strcat( 'person_', num2str( person_idx ) );
             mkdir( strcat( person_path, '/', person_name ) );
-            curr_person_heatmaps = curr_img_heatmaps{ 1, person_idx };
-            num_joints = size( curr_train_annolist( img_idx ).annorect( person_idx ).annopoints.point, 2 );
+            
             for joint_idx = 1 : num_joints
-                %cell2mat( curr_person_heatmaps( :, :, joint_idx ) );
+                heatmap = 0.5*pi*sigma.^2 .* exp( -( (joint_pos_from_center( joint_idx, 1 )-x).^2 +...
+                                                    (joint_pos_from_center( joint_idx, 2 ) - y).^2 ) /...
+                                                    ( 2*sigma.^2 ) );
+                %heatmap = heatmap .* scale_heatmaps;
+                %heatmap(heatmap < 1) = 0;
+                heatmap = num2cell( heatmap );
+                
+                if size( heatmap, 1 ) ~= img_rows
+                    heatmap = heatmap(1 : end - 1, :, : ); 
+                end
+                if size( heatmap, 2 ) ~= img_cols
+                    heatmap = heatmap(:, 1 : end - 1, : ); 
+                end
+                
                 path = strcat(heatmaps_dir, '\', img_name, '\', 'person_', num2str(person_idx),'\');
                 name = strcat('joint_', num2str( joint_idx ), '.mat');
-                heatmap = cell2mat( curr_person_heatmaps( :, :, joint_idx ) );
+                heatmap = cell2mat( heatmap );
                 save( strcat( path, name ), 'heatmap' );
-                %imwrite( cell2mat( curr_person_heatmaps( :, :, joint_idx ) ), strcat( path, name ) );
+                
             end
         end
     end
+
     next_starting_img_idx = next_starting_img_idx + num_imgs_one_go;
+    %save('anno_points_not_present_idx_list.mat', 'anno_points_not_present_idx_list');
     save('last_successful_batch_num.mat', 'batch_idx');
-    clearvars train_test_assignment curr_person_heatmaps curr_img_heatmaps curr_heatmap curr_train_annolist ...
-                heatmaps center_mat img_heatmaps
+    
 end
