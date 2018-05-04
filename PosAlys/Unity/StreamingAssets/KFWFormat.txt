@@ -1,0 +1,60 @@
+-------------
+Joints
+-------------
+0-SpineBase
+1-SpineMid
+2-Neck
+3-Head
+4-ShoulderLeft
+5-ElbowLeft
+6-WristLeft
+7-HandLeft
+8-ShoulderRight
+9-ElbowRight
+10-Unknown
+11-HandRight
+12-HipLeft
+13-KneeLeft
+14-AnkleLeft
+15-FootLeft
+16-HipRight
+17-KneeRight
+18-AnkleRight
+19-FootRight
+20-SpineShoulder
+21-HandTipLeft
+22-ThumbLeft
+23-HandTipRight
+24-ThumbRight
+
+-------------
+Bones
+-------------
+0-SpineBase, 1-SpineMid
+1-SpineMid, 2-Neck
+2-Neck, 3-Head
+
+20-SpineShoulder, 4-ShoulderLeft
+4-ShoulderLeft, 5-ElbowLeft
+5-ElbowLeft, 6-WristLeft
+6-WristLeft, 7-HandLeft
+
+20-SpineShoulder, 8-ShoulderRight
+8-ShoulderRight, 9-ElbowRight
+9-ElbowRight, 10-Unknown
+10-Unknown, 11-HandRight
+
+12-HipLeft, 13-KneeLeft
+13-KneeLeft, 14-AnkleLeft
+14-AnkleLeft, 15-FootLeft
+
+16-HipRight, 17-KneeRight
+17-KneeRight, 18-AnkleRight
+18-AnkleRight, 19-FootRight
+
+7-HandLeft, 21-HandTipLeft
+7-HandLeft, 22-ThumbLeft
+
+11-HandRight, 23-HandTipRight
+11-HandRight, 24-ThumbRight
+

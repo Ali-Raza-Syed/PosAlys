@@ -1,0 +1,130 @@
+-----------------
+Joints
+-----------------
+0-root_tx
+1-root_ty
+2-root_tz
+3-root_rz
+4-root_ry
+5-root_rx
+6-spine_3_ry
+7-spine_3_rz
+8-spine_3_rx
+9-spine_4_ry
+10-spine_4_rz
+11-spine_4_rx
+12-spine_2_ry
+13-spine_2_rz
+14-spine_2_rx
+15-spine_1_ry
+16-spine_1_rz
+17-spine_1_rx
+18-neck_1_ry
+19-neck_1_rz
+20-neck_1_rx
+21-head_ee_ry
+22-left_clavicle_ry
+23-left_clavicle_rz
+24-left_shoulder_rz
+25-left_shoulder_rx
+26-left_shoulder_ry
+27-left_elbow_rx
+28-left_lowarm_twist
+29-left_hand_rx
+30-left_hand_ry
+31-left_ee_rx
+32-right_clavicle_ry
+33-right_clavicle_rz
+34-right_shoulder_rz
+35-right_shoulder_rx
+36-right_shoulder_ry
+37-right_elbow_rx
+38-right_lowarm_twist
+39-right_hand_rx
+40-right_hand_ry
+41-right_ee_rx
+42-left_hip_rx
+43-left_hip_rz
+44-left_hip_ry
+45-left_knee_rx
+46-left_ankle_rx
+47-left_ankle_ry
+48-left_toes_rx
+49-left_foot_ee
+50-right_hip_rx
+51-right_hip_rz
+52-right_hip_ry
+53-right_knee_rx
+54-right_ankle_rx
+55-right_ankle_ry
+56-right_toes_rx
+57-right_foot_ee
+
+-----------------------
+Visualization Joints
+-----------------------
+5-root_rx
+8-spine_3_rx
+11-spine_4_rx
+14-spine_2_rx
+17-spine_1_rx
+20-neck_1_rx
+21-head_ee_ry
+23-left_clavicle_rz
+26-left_shoulder_ry
+27-left_elbow_rx
+28-left_lowarm_twist
+30-left_hand_ry
+31-left_ee_rx
+33-right_clavicle_rz
+36-right_shoulder_ry
+37-right_elbow_rx
+38-right_lowarm_twist
+40-right_hand_ry
+41-right_ee_rx
+44-left_hip_ry
+45-left_knee_rx
+47-left_ankle_ry
+48-left_toes_rx
+49-left_foot_ee
+52-right_hip_ry
+53-right_knee_rx
+55-right_ankle_ry
+56-right_toes_rx
+57-right_foot_ee
+
+-----------------------
+Bones
+-----------------------
+0-root_rx, 1-spine_3_rx
+1-spine_3_rx, 2-spine_4_rx
+0-root_rx, 3-spine_2_rx
+3-spine_2_rx, 4-spine_1_rx
+2-spine_4_rx, 5-neck_1_rx
+5-neck_1_rx, 6-head_ee_ry
+
+2-spine_4_rx, 7-left_clavicle_rz
+7-left_clavicle_rz, 8-left_shoulder_ry
+8-left_shoulder_ry, 9-left_elbow_rx
+9-left_elbow_rx, 10-left_lowarm_twist
+10-left_lowarm_twist, 11-left_hand_ry
+11-left_hand_ry, 12-left_ee_rx
+
+2-spine_4_rx, 13-right_clavicle_rz
+13-right_clavicle_rz, 14-right_shoulder_ry
+14-right_shoulder_ry, 15-right_elbow_rx
+15-right_elbow_rx, 16-right_lowarm_twist
+16-right_lowarm_twist, 17-right_hand_ry
+17-right_hand_ry, 18-right_ee_rx
+
+4-spine_1_rx, 19-left_hip_ry
+19-left_hip_ry, 20-left_knee_rx
+20-left_knee_rx, 21-left_ankle_ry
+21-left_ankle_ry, 22-left_toes_rx
+22-left_toes_rx, 23-left_foot_ee
+
+4-spine_1_rx, 24-right_hip_ry
+24-right_hip_ry, 25-right_knee_rx
+25-right_knee_rx, 26-right_ankle_ry
+26-right_ankle_ry, 27-right_toes_rx
+27-right_toes_rx, 28-right_foot_ee
